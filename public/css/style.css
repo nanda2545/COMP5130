@@ -1,0 +1,40 @@
+header {
+    background-color: #257180;
+    color: white;
+    padding: 16px 0px;
+}
+
+#new_note_form textarea,
+#read_note_div textarea {
+    background-color: #ffface;
+    width: 100%;
+    max-width: 100%;
+    font-size: 0.9rem;
+    font-family: "Lucida Console", Monaco, monospace;
+    height: 250px;
+    border: none;
+    box-shadow: none;
+    background: #ffface url(../images/page-flip.png) no-repeat bottom right;
+}
+
+.action-btns .btn{
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: normal;
+    text-decoration: none;
+    padding: 0.5em 4.5em;
+    margin: 0;
+    line-height: 2rem;
+    text-align: center;
+}
+
+.fv-form-bootstrap .help-block{
+    color: red;
+    font-weight: bold;
+}
+
+@media (min-width: 1400px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+        max-width: 760px;
+    }
+}

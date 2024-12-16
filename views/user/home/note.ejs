@@ -1,0 +1,99 @@
+<%- include('../common/header', {...header_data}) %>
+<section class="new-note mt-3" id="new_note_section">
+    <div class="container">
+        <div class="row" id="confirmataion_div">
+            <div class="col-md-12">
+                <h3 class="title fw-bold">Read and destroy?</h3>
+                <h5>
+                    You're about to read and destroy the note with id <%= data.noteId %>.
+                </h5>
+            </div>
+            <div class="action-btns row">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-danger w-100" id="read_note_btn" onclick="read_note()">yes,
+                        show me the note</button>
+                </div>
+                <div class="col-md-6">
+                    <a type="button" class="btn btn-secondary w-100" href="/">No, not now</a>
+                </div>
+            </div>
+        </div>
+        <div class="row d-none" id="fetching_note">
+            <h3 class="title fw-bold">Fetching...</h3>
+            <h5>Please wait while the note is downloading from TempNote.</h5>
+        </div>
+        <div class="row d-none" id="error_note">
+            <h3 class="title fw-bold" id="errorMessage"></h3>
+            <h5 id="errorDescription"></h5>
+            <div class="action-btns row">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-danger w-100" id="read_note_btn"
+                        onclick="read_note()">Retry</button>
+                </div>
+            </div>
+        </div>
+        <div class="row d-none" id="read_note_div">
+            <h3 class="title fw-bold">Note contents</h3>
+            <textarea class="form-control mb-3" id="note" name="note" rows="4" placeholder="your note here..."
+                disabled></textarea>
+        </div>
+    </div>
+</section>
+<%- include('../common/footer',{...footer_data}) %>
+
+<!-- read_note -->
+<script>
+    const passwordRequired = '<%= data.passwordRequired %>';
+
+    //read note function
+    function read_note() {
+        let password = '';
+        if (passwordRequired == 'true') {
+            password = prompt('Please enter the password to read the note');
+            if (password === null || password === '') {
+                return;
+            }
+        }
+
+        $('#confirmataion_div').addClass('d-none');
+        $('#fetching_note').removeClass('d-none');
+        $('#error_note').addClass('d-none');
+        $.ajax({
+            url: '/note/read/<%= data.noteId %>',
+            type: 'POST',
+            data: {
+                password: password
+            },
+            success: function (response) {
+                if (response.status == 200) {
+                    $('#fetching_note').addClass('d-none');
+                    $('#read_note_div').removeClass('d-none');
+                    $('#error_note').addClass('d-none');
+                    $('#note').val(response.data.note);
+                } else {
+                    $('#fetching_note').addClass('d-none');
+                    $('#error_note').removeClass('d-none');
+                    $('#errorMessage').text(response.data.errorMessage);
+                    $('#errorDescription').text(response.data.errorDescription);
+                }
+            },
+            error: function (error) {
+                $('#fetching_note').addClass('d-none');
+                $('#error_note').removeClass('d-none');
+                $('#read_note_div').addClass('d-none');
+                $('#errorMessage').text(error.responseJSON.errorMessage || 'Error');
+                $('#errorDescription').text(error.responseJSON.errorDescription || 'Something went wrong');
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        //copy note content
+        $('#copy_note_content').on('click', function () {
+            var copyText = document.getElementById("note");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+            document.execCommand("copy");
+        });
+    });
+</script>

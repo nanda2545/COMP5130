@@ -1,0 +1,14 @@
+<%- include('../common/header', {...header_data}) %>
+<section class="new-note mt-3" id="new_note_section">
+    <div class="container">
+        <div class="row">
+           <div class="col-md-12">
+            <h3 class="title fw-bold"><%= data.errorMessage %></h3>
+            <h5>
+                <%= data.errorDescription %>
+            </h5>
+           </div>
+        </div>
+    </div>
+</section>
+<%- include('../common/footer',{...footer_data}) %>
